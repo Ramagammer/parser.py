@@ -1,0 +1,39 @@
+from asyncio import create_subprocess_exec
+import requests
+import warnings
+import sqlite3
+from urllib3.exceptions import InsecureRequestWarning
+from bs4 import BeautifulSoup
+
+# URL de la página web que deseas analizar
+url = 'https://www.arizmendi.com/Informaci%C3%B3n_Adicional/Cotizaciones/CER'
+
+# Realiza una solicitud GET para obtener el contenido HTML
+response = requests.get(url)
+
+# Verifica que la solicitud fue exitosa (código de estado 200)
+if response.status_code == 200:
+    # Obtén el contenido HTML de la página
+    html_content = response.text
+
+#----
+
+    # Analiza el HTML con BeautifulSoup
+    soup = BeautifulSoup(html_content, 'html.parser')
+
+    # Encuentra los elementos HTML que contienen la información que deseas extraer
+    # Supongamos que los datos que deseas están dentro de etiquetas <div> con clase "dato"
+    data_elements = soup.find_all('/html/body/section/div/div[3]/div[2]/div/div[5]/div[16]/table/tbody')
+    # Crea una lista para almacenar los datos
+    data_list = []
+
+    # Itera a través de los elementos y extrae el texto
+    for element in data_elements:
+        data_list.append(element.text)
+    
+    print(data_list)
+
+    print("Solicitud Hecha Correctamente")
+
+else:
+    print('La solicitud no fue exitosa. Código de estado:', response.status_code)
